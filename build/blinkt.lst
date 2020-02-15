@@ -1,0 +1,940 @@
+ARM GAS  /tmp/cctuXJ4s.s 			page 1
+
+
+   1              		.cpu cortex-m0
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"blinkt.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.clear_blinkt,"ax",%progbits
+  16              		.align	1
+  17              		.global	clear_blinkt
+  18              		.syntax unified
+  19              		.code	16
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	clear_blinkt:
+  24              	.LFB40:
+  25              		.file 1 "Src/blinkt.c"
+   1:Src/blinkt.c  **** /* USER CODE BEGIN Header */
+   2:Src/blinkt.c  **** /**
+   3:Src/blinkt.c  ****   ******************************************************************************
+   4:Src/blinkt.c  ****   * @file           : blinkt.c
+   5:Src/blinkt.c  ****   * @brief          : Blinkt function definitons
+   6:Src/blinkt.c  ****   *****************************************************************************/
+   7:Src/blinkt.c  **** 
+   8:Src/blinkt.c  **** /* USER CODE END Header */
+   9:Src/blinkt.c  **** 
+  10:Src/blinkt.c  **** /* Includes ------------------------------------------------------------------*/
+  11:Src/blinkt.c  **** #include "blinkt.h"
+  12:Src/blinkt.c  **** // #include "main.h"
+  13:Src/blinkt.c  **** #define APA_SOF 0b11100000
+  14:Src/blinkt.c  **** 
+  15:Src/blinkt.c  **** #define RED_MAX 255
+  16:Src/blinkt.c  **** #define RED_MIN 220
+  17:Src/blinkt.c  **** #define GREEN_MAX 200
+  18:Src/blinkt.c  **** #define GREEN_MIN 30
+  19:Src/blinkt.c  **** #define BLUE_MAX 12
+  20:Src/blinkt.c  **** #define BLUE_MIN 0
+  21:Src/blinkt.c  **** 
+  22:Src/blinkt.c  **** /* Private includes ----------------------------------------------------------*/
+  23:Src/blinkt.c  **** /* USER CODE BEGIN Includes */
+  24:Src/blinkt.c  **** 
+  25:Src/blinkt.c  **** /* USER CODE END Includes */
+  26:Src/blinkt.c  **** 
+  27:Src/blinkt.c  **** /* Private typedef -----------------------------------------------------------*/
+  28:Src/blinkt.c  **** /* USER CODE BEGIN PTD */
+  29:Src/blinkt.c  **** 
+  30:Src/blinkt.c  **** /* USER CODE END PTD */
+  31:Src/blinkt.c  **** 
+  32:Src/blinkt.c  **** /* Private define ------------------------------------------------------------*/
+  33:Src/blinkt.c  **** /* USER CODE BEGIN PD */
+ARM GAS  /tmp/cctuXJ4s.s 			page 2
+
+
+  34:Src/blinkt.c  **** /* USER CODE END PD */
+  35:Src/blinkt.c  **** 
+  36:Src/blinkt.c  **** /* Private macro -------------------------------------------------------------*/
+  37:Src/blinkt.c  **** /* USER CODE BEGIN PM */
+  38:Src/blinkt.c  **** 
+  39:Src/blinkt.c  **** /* USER CODE END PM */
+  40:Src/blinkt.c  **** 
+  41:Src/blinkt.c  **** /* Private variables ---------------------------------------------------------*/
+  42:Src/blinkt.c  **** /* USER CODE BEGIN PV */
+  43:Src/blinkt.c  **** uint8_t spi_data;
+  44:Src/blinkt.c  **** extern SPI_HandleTypeDef hspi1;
+  45:Src/blinkt.c  **** /* USER CODE END PV */
+  46:Src/blinkt.c  **** 
+  47:Src/blinkt.c  **** /* Private function defines -----------------------------------------------*/
+  48:Src/blinkt.c  **** /* USER CODE BEGIN PFP */
+  49:Src/blinkt.c  **** #define DEFAULT_BRIGHTNESS 30
+  50:Src/blinkt.c  **** #define NUM_LEDS 8
+  51:Src/blinkt.c  **** 
+  52:Src/blinkt.c  **** // #define MOSI 23
+  53:Src/blinkt.c  **** // #define SCLK 24
+  54:Src/blinkt.c  **** 
+  55:Src/blinkt.c  **** #ifdef TEST
+  56:Src/blinkt.c  **** volatile int running = 0;
+  57:Src/blinkt.c  **** #endif
+  58:Src/blinkt.c  **** 
+  59:Src/blinkt.c  **** int x;
+  60:Src/blinkt.c  **** 
+  61:Src/blinkt.c  **** uint32_t leds[NUM_LEDS] = {};
+  62:Src/blinkt.c  **** 
+  63:Src/blinkt.c  **** // #ifdef TEST
+  64:Src/blinkt.c  **** // void sigint_handler(int dummy){
+  65:Src/blinkt.c  **** // 	running = 0;
+  66:Src/blinkt.c  **** // 	return;
+  67:Src/blinkt.c  **** // }
+  68:Src/blinkt.c  **** // #endif
+  69:Src/blinkt.c  **** 
+  70:Src/blinkt.c  **** void clear_blinkt(){
+  26              		.loc 1 70 0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              		@ link register save eliminated.
+  71:Src/blinkt.c  **** 	for(x = 0; x < NUM_LEDS; x++){
+  31              		.loc 1 71 0
+  32 0000 0022     		movs	r2, #0
+  33 0002 074B     		ldr	r3, .L4
+  34 0004 1A60     		str	r2, [r3]
+  35 0006 06E0     		b	.L2
+  36              	.L3:
+  72:Src/blinkt.c  **** 		leds[x] = DEFAULT_BRIGHTNESS;
+  37              		.loc 1 72 0 discriminator 3
+  38 0008 9900     		lsls	r1, r3, #2
+  39 000a 1E20     		movs	r0, #30
+  40 000c 054A     		ldr	r2, .L4+4
+  41 000e 8850     		str	r0, [r1, r2]
+  71:Src/blinkt.c  **** 	for(x = 0; x < NUM_LEDS; x++){
+  42              		.loc 1 71 0 discriminator 3
+ARM GAS  /tmp/cctuXJ4s.s 			page 3
+
+
+  43 0010 0133     		adds	r3, r3, #1
+  44 0012 034A     		ldr	r2, .L4
+  45 0014 1360     		str	r3, [r2]
+  46              	.L2:
+  71:Src/blinkt.c  **** 	for(x = 0; x < NUM_LEDS; x++){
+  47              		.loc 1 71 0 is_stmt 0 discriminator 1
+  48 0016 024B     		ldr	r3, .L4
+  49 0018 1B68     		ldr	r3, [r3]
+  50 001a 072B     		cmp	r3, #7
+  51 001c F4DD     		ble	.L3
+  73:Src/blinkt.c  **** 	}	
+  74:Src/blinkt.c  **** }
+  52              		.loc 1 74 0 is_stmt 1
+  53              		@ sp needed
+  54 001e 7047     		bx	lr
+  55              	.L5:
+  56              		.align	2
+  57              	.L4:
+  58 0020 00000000 		.word	x
+  59 0024 00000000 		.word	.LANCHOR0
+  60              		.cfi_endproc
+  61              	.LFE40:
+  63              		.section	.text.set_pixel_brightness_blinkt,"ax",%progbits
+  64              		.align	1
+  65              		.global	set_pixel_brightness_blinkt
+  66              		.syntax unified
+  67              		.code	16
+  68              		.thumb_func
+  69              		.fpu softvfp
+  71              	set_pixel_brightness_blinkt:
+  72              	.LFB42:
+  75:Src/blinkt.c  **** 
+  76:Src/blinkt.c  **** void set_pixel_blinkt(uint8_t led, uint8_t r, uint8_t g, uint8_t b){
+  77:Src/blinkt.c  **** 	if(led >= NUM_LEDS) return;
+  78:Src/blinkt.c  **** 
+  79:Src/blinkt.c  **** 	leds[led] = rgbb_blinkt(r,g,b,leds[led] & 0b11111);
+  80:Src/blinkt.c  **** }
+  81:Src/blinkt.c  **** 
+  82:Src/blinkt.c  **** void set_pixel_brightness_blinkt(uint8_t led, uint8_t brightness){
+  73              		.loc 1 82 0
+  74              		.cfi_startproc
+  75              		@ args = 0, pretend = 0, frame = 0
+  76              		@ frame_needed = 0, uses_anonymous_args = 0
+  77              	.LVL0:
+  78 0000 10B5     		push	{r4, lr}
+  79              	.LCFI0:
+  80              		.cfi_def_cfa_offset 8
+  81              		.cfi_offset 4, -8
+  82              		.cfi_offset 14, -4
+  83 0002 0C00     		movs	r4, r1
+  83:Src/blinkt.c  **** 	if(led >= NUM_LEDS) return;
+  84              		.loc 1 83 0
+  85 0004 0728     		cmp	r0, #7
+  86 0006 09D8     		bhi	.L6
+  84:Src/blinkt.c  **** 	
+  85:Src/blinkt.c  **** 	leds[led] = (leds[led] & 0xFFFFFF00) | (brightness & 0b11111);
+  87              		.loc 1 85 0
+ARM GAS  /tmp/cctuXJ4s.s 			page 4
+
+
+  88 0008 054A     		ldr	r2, .L8
+  89 000a 8000     		lsls	r0, r0, #2
+  90              	.LVL1:
+  91 000c FF23     		movs	r3, #255
+  92 000e 8158     		ldr	r1, [r0, r2]
+  93              	.LVL2:
+  94 0010 9943     		bics	r1, r3
+  95 0012 0B00     		movs	r3, r1
+  96 0014 1F21     		movs	r1, #31
+  97 0016 2140     		ands	r1, r4
+  98 0018 1943     		orrs	r1, r3
+  99 001a 8150     		str	r1, [r0, r2]
+ 100              	.L6:
+  86:Src/blinkt.c  **** }
+ 101              		.loc 1 86 0
+ 102              		@ sp needed
+ 103 001c 10BD     		pop	{r4, pc}
+ 104              	.L9:
+ 105 001e C046     		.align	2
+ 106              	.L8:
+ 107 0020 00000000 		.word	.LANCHOR0
+ 108              		.cfi_endproc
+ 109              	.LFE42:
+ 111              		.section	.text.set_pixel_uint32_blinkt,"ax",%progbits
+ 112              		.align	1
+ 113              		.global	set_pixel_uint32_blinkt
+ 114              		.syntax unified
+ 115              		.code	16
+ 116              		.thumb_func
+ 117              		.fpu softvfp
+ 119              	set_pixel_uint32_blinkt:
+ 120              	.LFB43:
+  87:Src/blinkt.c  **** 
+  88:Src/blinkt.c  **** void set_pixel_uint32_blinkt(uint8_t led, uint32_t color){
+ 121              		.loc 1 88 0
+ 122              		.cfi_startproc
+ 123              		@ args = 0, pretend = 0, frame = 0
+ 124              		@ frame_needed = 0, uses_anonymous_args = 0
+ 125              		@ link register save eliminated.
+ 126              	.LVL3:
+  89:Src/blinkt.c  **** 	if(led >= NUM_LEDS) return;
+ 127              		.loc 1 89 0
+ 128 0000 0728     		cmp	r0, #7
+ 129 0002 02D8     		bhi	.L10
+  90:Src/blinkt.c  **** 
+  91:Src/blinkt.c  **** 	leds[led] = color;
+ 130              		.loc 1 91 0
+ 131 0004 8000     		lsls	r0, r0, #2
+ 132              	.LVL4:
+ 133 0006 014B     		ldr	r3, .L12
+ 134 0008 C150     		str	r1, [r0, r3]
+ 135              	.L10:
+  92:Src/blinkt.c  **** }
+ 136              		.loc 1 92 0
+ 137              		@ sp needed
+ 138 000a 7047     		bx	lr
+ 139              	.L13:
+ARM GAS  /tmp/cctuXJ4s.s 			page 5
+
+
+ 140              		.align	2
+ 141              	.L12:
+ 142 000c 00000000 		.word	.LANCHOR0
+ 143              		.cfi_endproc
+ 144              	.LFE43:
+ 146              		.section	.text.rgbb_blinkt,"ax",%progbits
+ 147              		.align	1
+ 148              		.global	rgbb_blinkt
+ 149              		.syntax unified
+ 150              		.code	16
+ 151              		.thumb_func
+ 152              		.fpu softvfp
+ 154              	rgbb_blinkt:
+ 155              	.LFB44:
+  93:Src/blinkt.c  **** 
+  94:Src/blinkt.c  **** uint32_t rgbb_blinkt(uint8_t r, uint8_t g, uint8_t b, uint8_t brightness){
+ 156              		.loc 1 94 0
+ 157              		.cfi_startproc
+ 158              		@ args = 0, pretend = 0, frame = 0
+ 159              		@ frame_needed = 0, uses_anonymous_args = 0
+ 160              	.LVL5:
+ 161 0000 10B5     		push	{r4, lr}
+ 162              	.LCFI1:
+ 163              		.cfi_def_cfa_offset 8
+ 164              		.cfi_offset 4, -8
+ 165              		.cfi_offset 14, -4
+ 166              	.LVL6:
+  95:Src/blinkt.c  **** 	uint32_t result = 0;
+  96:Src/blinkt.c  **** 	result = (brightness & 0b11111);
+ 167              		.loc 1 96 0
+ 168 0002 1F24     		movs	r4, #31
+ 169 0004 2340     		ands	r3, r4
+ 170              	.LVL7:
+  97:Src/blinkt.c  **** 	result |= ((uint32_t)r << 24);
+ 171              		.loc 1 97 0
+ 172 0006 0006     		lsls	r0, r0, #24
+ 173              	.LVL8:
+ 174 0008 1843     		orrs	r0, r3
+ 175              	.LVL9:
+  98:Src/blinkt.c  **** 	result |= ((uint32_t)g << 16);
+ 176              		.loc 1 98 0
+ 177 000a 0904     		lsls	r1, r1, #16
+ 178              	.LVL10:
+ 179 000c 0843     		orrs	r0, r1
+ 180              	.LVL11:
+  99:Src/blinkt.c  **** 	result |= ((uint16_t)b << 8);
+ 181              		.loc 1 99 0
+ 182 000e 1202     		lsls	r2, r2, #8
+ 183              	.LVL12:
+ 184 0010 1043     		orrs	r0, r2
+ 185              	.LVL13:
+ 100:Src/blinkt.c  **** 	return result;
+ 101:Src/blinkt.c  **** }
+ 186              		.loc 1 101 0
+ 187              		@ sp needed
+ 188 0012 10BD     		pop	{r4, pc}
+ 189              		.cfi_endproc
+ARM GAS  /tmp/cctuXJ4s.s 			page 6
+
+
+ 190              	.LFE44:
+ 192              		.section	.text.set_pixel_blinkt,"ax",%progbits
+ 193              		.align	1
+ 194              		.global	set_pixel_blinkt
+ 195              		.syntax unified
+ 196              		.code	16
+ 197              		.thumb_func
+ 198              		.fpu softvfp
+ 200              	set_pixel_blinkt:
+ 201              	.LFB41:
+  76:Src/blinkt.c  **** 	if(led >= NUM_LEDS) return;
+ 202              		.loc 1 76 0
+ 203              		.cfi_startproc
+ 204              		@ args = 0, pretend = 0, frame = 0
+ 205              		@ frame_needed = 0, uses_anonymous_args = 0
+ 206              	.LVL14:
+ 207 0000 70B5     		push	{r4, r5, r6, lr}
+ 208              	.LCFI2:
+ 209              		.cfi_def_cfa_offset 16
+ 210              		.cfi_offset 4, -16
+ 211              		.cfi_offset 5, -12
+ 212              		.cfi_offset 6, -8
+ 213              		.cfi_offset 14, -4
+ 214 0002 0D00     		movs	r5, r1
+ 215 0004 1100     		movs	r1, r2
+ 216              	.LVL15:
+ 217 0006 1A00     		movs	r2, r3
+ 218              	.LVL16:
+  77:Src/blinkt.c  **** 
+ 219              		.loc 1 77 0
+ 220 0008 0728     		cmp	r0, #7
+ 221 000a 08D8     		bhi	.L15
+  79:Src/blinkt.c  **** }
+ 222              		.loc 1 79 0
+ 223 000c 044E     		ldr	r6, .L17
+ 224 000e 8400     		lsls	r4, r0, #2
+ 225 0010 1F23     		movs	r3, #31
+ 226              	.LVL17:
+ 227 0012 A059     		ldr	r0, [r4, r6]
+ 228              	.LVL18:
+ 229 0014 0340     		ands	r3, r0
+ 230 0016 2800     		movs	r0, r5
+ 231 0018 FFF7FEFF 		bl	rgbb_blinkt
+ 232              	.LVL19:
+ 233 001c A051     		str	r0, [r4, r6]
+ 234              	.L15:
+  80:Src/blinkt.c  **** 
+ 235              		.loc 1 80 0
+ 236              		@ sp needed
+ 237 001e 70BD     		pop	{r4, r5, r6, pc}
+ 238              	.L18:
+ 239              		.align	2
+ 240              	.L17:
+ 241 0020 00000000 		.word	.LANCHOR0
+ 242              		.cfi_endproc
+ 243              	.LFE41:
+ 245              		.section	.text.rgb_blinkt,"ax",%progbits
+ARM GAS  /tmp/cctuXJ4s.s 			page 7
+
+
+ 246              		.align	1
+ 247              		.global	rgb_blinkt
+ 248              		.syntax unified
+ 249              		.code	16
+ 250              		.thumb_func
+ 251              		.fpu softvfp
+ 253              	rgb_blinkt:
+ 254              	.LFB45:
+ 102:Src/blinkt.c  **** 
+ 103:Src/blinkt.c  **** uint32_t rgb_blinkt(uint8_t r, uint8_t g, uint8_t b){
+ 255              		.loc 1 103 0
+ 256              		.cfi_startproc
+ 257              		@ args = 0, pretend = 0, frame = 0
+ 258              		@ frame_needed = 0, uses_anonymous_args = 0
+ 259              	.LVL20:
+ 260 0000 10B5     		push	{r4, lr}
+ 261              	.LCFI3:
+ 262              		.cfi_def_cfa_offset 8
+ 263              		.cfi_offset 4, -8
+ 264              		.cfi_offset 14, -4
+ 104:Src/blinkt.c  **** 	return rgbb(r, g, b, DEFAULT_BRIGHTNESS);
+ 265              		.loc 1 104 0
+ 266 0002 1E23     		movs	r3, #30
+ 267 0004 FFF7FEFF 		bl	rgbb
+ 268              	.LVL21:
+ 105:Src/blinkt.c  **** }
+ 269              		.loc 1 105 0
+ 270              		@ sp needed
+ 271 0008 10BD     		pop	{r4, pc}
+ 272              		.cfi_endproc
+ 273              	.LFE45:
+ 275              		.section	.text.write_byte_blinkt,"ax",%progbits
+ 276              		.align	1
+ 277              		.global	write_byte_blinkt
+ 278              		.syntax unified
+ 279              		.code	16
+ 280              		.thumb_func
+ 281              		.fpu softvfp
+ 283              	write_byte_blinkt:
+ 284              	.LFB46:
+ 106:Src/blinkt.c  **** 
+ 107:Src/blinkt.c  **** void write_byte_blinkt(uint8_t byte){
+ 285              		.loc 1 107 0
+ 286              		.cfi_startproc
+ 287              		@ args = 0, pretend = 0, frame = 8
+ 288              		@ frame_needed = 0, uses_anonymous_args = 0
+ 289              	.LVL22:
+ 290 0000 00B5     		push	{lr}
+ 291              	.LCFI4:
+ 292              		.cfi_def_cfa_offset 4
+ 293              		.cfi_offset 14, -4
+ 294 0002 83B0     		sub	sp, sp, #12
+ 295              	.LCFI5:
+ 296              		.cfi_def_cfa_offset 16
+ 108:Src/blinkt.c  **** 	uint8_t send_data[1];
+ 109:Src/blinkt.c  **** 
+ 110:Src/blinkt.c  ****   send_data[0] = byte;
+ARM GAS  /tmp/cctuXJ4s.s 			page 8
+
+
+ 297              		.loc 1 110 0
+ 298 0004 01A9     		add	r1, sp, #4
+ 299 0006 0870     		strb	r0, [r1]
+ 111:Src/blinkt.c  **** 
+ 112:Src/blinkt.c  ****   HAL_SPI_Transmit(&hspi1, send_data, 1, 10);
+ 300              		.loc 1 112 0
+ 301 0008 0A23     		movs	r3, #10
+ 302 000a 0122     		movs	r2, #1
+ 303 000c 0248     		ldr	r0, .L21
+ 304              	.LVL23:
+ 305 000e FFF7FEFF 		bl	HAL_SPI_Transmit
+ 306              	.LVL24:
+ 113:Src/blinkt.c  ****   // Use the below 6 lines instead of the above 3, if you want to use any GPIO pins for controlling
+ 114:Src/blinkt.c  ****   // Currently this function uses the SPI functionality. 
+ 115:Src/blinkt.c  **** 
+ 116:Src/blinkt.c  ****   // for(int n = 0; n < 8; n++){
+ 117:Src/blinkt.c  ****   //   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, (byte & (1 << (7-n))) > 0);
+ 118:Src/blinkt.c  ****   //   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
+ 119:Src/blinkt.c  ****   //   HAL_Delay(1);
+ 120:Src/blinkt.c  ****   //   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+ 121:Src/blinkt.c  ****   // }
+ 122:Src/blinkt.c  **** }
+ 307              		.loc 1 122 0
+ 308 0012 03B0     		add	sp, sp, #12
+ 309              		@ sp needed
+ 310 0014 00BD     		pop	{pc}
+ 311              	.L22:
+ 312 0016 C046     		.align	2
+ 313              	.L21:
+ 314 0018 00000000 		.word	hspi1
+ 315              		.cfi_endproc
+ 316              	.LFE46:
+ 318              		.section	.text.show_blinkt,"ax",%progbits
+ 319              		.align	1
+ 320              		.global	show_blinkt
+ 321              		.syntax unified
+ 322              		.code	16
+ 323              		.thumb_func
+ 324              		.fpu softvfp
+ 326              	show_blinkt:
+ 327              	.LFB47:
+ 123:Src/blinkt.c  **** 
+ 124:Src/blinkt.c  **** void show_blinkt(void){
+ 328              		.loc 1 124 0
+ 329              		.cfi_startproc
+ 330              		@ args = 0, pretend = 0, frame = 0
+ 331              		@ frame_needed = 0, uses_anonymous_args = 0
+ 332 0000 70B5     		push	{r4, r5, r6, lr}
+ 333              	.LCFI6:
+ 334              		.cfi_def_cfa_offset 16
+ 335              		.cfi_offset 4, -16
+ 336              		.cfi_offset 5, -12
+ 337              		.cfi_offset 6, -8
+ 338              		.cfi_offset 14, -4
+ 125:Src/blinkt.c  **** 	write_byte_blinkt(0);
+ 339              		.loc 1 125 0
+ 340 0002 0020     		movs	r0, #0
+ARM GAS  /tmp/cctuXJ4s.s 			page 9
+
+
+ 341 0004 FFF7FEFF 		bl	write_byte_blinkt
+ 342              	.LVL25:
+ 126:Src/blinkt.c  **** 	write_byte_blinkt(0);
+ 343              		.loc 1 126 0
+ 344 0008 0020     		movs	r0, #0
+ 345 000a FFF7FEFF 		bl	write_byte_blinkt
+ 346              	.LVL26:
+ 127:Src/blinkt.c  **** 	write_byte_blinkt(0);
+ 347              		.loc 1 127 0
+ 348 000e 0020     		movs	r0, #0
+ 349 0010 FFF7FEFF 		bl	write_byte_blinkt
+ 350              	.LVL27:
+ 128:Src/blinkt.c  **** 	write_byte_blinkt(0);
+ 351              		.loc 1 128 0
+ 352 0014 0020     		movs	r0, #0
+ 353 0016 FFF7FEFF 		bl	write_byte_blinkt
+ 354              	.LVL28:
+ 129:Src/blinkt.c  **** 	for(x = 0; x < NUM_LEDS; x++){
+ 355              		.loc 1 129 0
+ 356 001a 0022     		movs	r2, #0
+ 357 001c 1A4B     		ldr	r3, .L26
+ 358 001e 1A60     		str	r2, [r3]
+ 359 0020 20E0     		b	.L24
+ 360              	.L25:
+ 130:Src/blinkt.c  **** 		write_byte_blinkt(APA_SOF | (leds[x] & 0b11111));
+ 361              		.loc 1 130 0 discriminator 3
+ 362 0022 1A4D     		ldr	r5, .L26+4
+ 363 0024 9B00     		lsls	r3, r3, #2
+ 364 0026 5B59     		ldr	r3, [r3, r5]
+ 365 0028 2020     		movs	r0, #32
+ 366 002a 4042     		rsbs	r0, r0, #0
+ 367 002c 1843     		orrs	r0, r3
+ 368 002e C0B2     		uxtb	r0, r0
+ 369 0030 FFF7FEFF 		bl	write_byte_blinkt
+ 370              	.LVL29:
+ 131:Src/blinkt.c  **** 		write_byte_blinkt((leds[x] >> 8 ) & 0xFF);
+ 371              		.loc 1 131 0 discriminator 3
+ 372 0034 144C     		ldr	r4, .L26
+ 373 0036 2368     		ldr	r3, [r4]
+ 374 0038 9B00     		lsls	r3, r3, #2
+ 375 003a 5859     		ldr	r0, [r3, r5]
+ 376 003c 000A     		lsrs	r0, r0, #8
+ 377 003e C0B2     		uxtb	r0, r0
+ 378 0040 FFF7FEFF 		bl	write_byte_blinkt
+ 379              	.LVL30:
+ 132:Src/blinkt.c  **** 		write_byte_blinkt((leds[x] >> 16) & 0xFF);
+ 380              		.loc 1 132 0 discriminator 3
+ 381 0044 2368     		ldr	r3, [r4]
+ 382 0046 9B00     		lsls	r3, r3, #2
+ 383 0048 5859     		ldr	r0, [r3, r5]
+ 384 004a 000C     		lsrs	r0, r0, #16
+ 385 004c C0B2     		uxtb	r0, r0
+ 386 004e FFF7FEFF 		bl	write_byte_blinkt
+ 387              	.LVL31:
+ 133:Src/blinkt.c  **** 		write_byte_blinkt((leds[x] >> 24) & 0xFF);
+ 388              		.loc 1 133 0 discriminator 3
+ 389 0052 2368     		ldr	r3, [r4]
+ARM GAS  /tmp/cctuXJ4s.s 			page 10
+
+
+ 390 0054 9B00     		lsls	r3, r3, #2
+ 391 0056 5859     		ldr	r0, [r3, r5]
+ 392 0058 000E     		lsrs	r0, r0, #24
+ 393 005a FFF7FEFF 		bl	write_byte_blinkt
+ 394              	.LVL32:
+ 129:Src/blinkt.c  **** 		write_byte_blinkt(APA_SOF | (leds[x] & 0b11111));
+ 395              		.loc 1 129 0 discriminator 3
+ 396 005e 2368     		ldr	r3, [r4]
+ 397 0060 0133     		adds	r3, r3, #1
+ 398 0062 2360     		str	r3, [r4]
+ 399              	.L24:
+ 129:Src/blinkt.c  **** 		write_byte_blinkt(APA_SOF | (leds[x] & 0b11111));
+ 400              		.loc 1 129 0 is_stmt 0 discriminator 1
+ 401 0064 084B     		ldr	r3, .L26
+ 402 0066 1B68     		ldr	r3, [r3]
+ 403 0068 072B     		cmp	r3, #7
+ 404 006a DADD     		ble	.L25
+ 134:Src/blinkt.c  **** 	}
+ 135:Src/blinkt.c  **** 	write_byte_blinkt(0xff);
+ 405              		.loc 1 135 0 is_stmt 1
+ 406 006c FF20     		movs	r0, #255
+ 407 006e FFF7FEFF 		bl	write_byte_blinkt
+ 408              	.LVL33:
+ 136:Src/blinkt.c  **** 	write_byte_blinkt(0xff);
+ 409              		.loc 1 136 0
+ 410 0072 FF20     		movs	r0, #255
+ 411 0074 FFF7FEFF 		bl	write_byte_blinkt
+ 412              	.LVL34:
+ 137:Src/blinkt.c  **** 	write_byte_blinkt(0xff);
+ 413              		.loc 1 137 0
+ 414 0078 FF20     		movs	r0, #255
+ 415 007a FFF7FEFF 		bl	write_byte_blinkt
+ 416              	.LVL35:
+ 138:Src/blinkt.c  **** 	write_byte_blinkt(0xff);
+ 417              		.loc 1 138 0
+ 418 007e FF20     		movs	r0, #255
+ 419 0080 FFF7FEFF 		bl	write_byte_blinkt
+ 420              	.LVL36:
+ 139:Src/blinkt.c  **** }
+ 421              		.loc 1 139 0
+ 422              		@ sp needed
+ 423 0084 70BD     		pop	{r4, r5, r6, pc}
+ 424              	.L27:
+ 425 0086 C046     		.align	2
+ 426              	.L26:
+ 427 0088 00000000 		.word	x
+ 428 008c 00000000 		.word	.LANCHOR0
+ 429              		.cfi_endproc
+ 430              	.LFE47:
+ 432              		.section	.text.candle_brightness_blinkt,"ax",%progbits
+ 433              		.align	1
+ 434              		.global	candle_brightness_blinkt
+ 435              		.syntax unified
+ 436              		.code	16
+ 437              		.thumb_func
+ 438              		.fpu softvfp
+ 440              	candle_brightness_blinkt:
+ARM GAS  /tmp/cctuXJ4s.s 			page 11
+
+
+ 441              	.LFB48:
+ 140:Src/blinkt.c  **** 
+ 141:Src/blinkt.c  **** /* Candle Simulation Functions */
+ 142:Src/blinkt.c  **** void candle_brightness_blinkt() {
+ 442              		.loc 1 142 0
+ 443              		.cfi_startproc
+ 444              		@ args = 0, pretend = 0, frame = 0
+ 445              		@ frame_needed = 0, uses_anonymous_args = 0
+ 446 0000 10B5     		push	{r4, lr}
+ 447              	.LCFI7:
+ 448              		.cfi_def_cfa_offset 8
+ 449              		.cfi_offset 4, -8
+ 450              		.cfi_offset 14, -4
+ 143:Src/blinkt.c  ****   set_pixel_brightness_blinkt(0,1);
+ 451              		.loc 1 143 0
+ 452 0002 0121     		movs	r1, #1
+ 453 0004 0020     		movs	r0, #0
+ 454 0006 FFF7FEFF 		bl	set_pixel_brightness_blinkt
+ 455              	.LVL37:
+ 144:Src/blinkt.c  ****   set_pixel_brightness_blinkt(1,2);
+ 456              		.loc 1 144 0
+ 457 000a 0221     		movs	r1, #2
+ 458 000c 0120     		movs	r0, #1
+ 459 000e FFF7FEFF 		bl	set_pixel_brightness_blinkt
+ 460              	.LVL38:
+ 145:Src/blinkt.c  ****   set_pixel_brightness_blinkt(2,3);
+ 461              		.loc 1 145 0
+ 462 0012 0321     		movs	r1, #3
+ 463 0014 0220     		movs	r0, #2
+ 464 0016 FFF7FEFF 		bl	set_pixel_brightness_blinkt
+ 465              	.LVL39:
+ 146:Src/blinkt.c  ****   set_pixel_brightness_blinkt(3,4);
+ 466              		.loc 1 146 0
+ 467 001a 0421     		movs	r1, #4
+ 468 001c 0320     		movs	r0, #3
+ 469 001e FFF7FEFF 		bl	set_pixel_brightness_blinkt
+ 470              	.LVL40:
+ 147:Src/blinkt.c  ****   set_pixel_brightness_blinkt(4,5);
+ 471              		.loc 1 147 0
+ 472 0022 0521     		movs	r1, #5
+ 473 0024 0420     		movs	r0, #4
+ 474 0026 FFF7FEFF 		bl	set_pixel_brightness_blinkt
+ 475              	.LVL41:
+ 148:Src/blinkt.c  ****   set_pixel_brightness_blinkt(5,6);
+ 476              		.loc 1 148 0
+ 477 002a 0621     		movs	r1, #6
+ 478 002c 0520     		movs	r0, #5
+ 479 002e FFF7FEFF 		bl	set_pixel_brightness_blinkt
+ 480              	.LVL42:
+ 149:Src/blinkt.c  ****   set_pixel_brightness_blinkt(6,7);
+ 481              		.loc 1 149 0
+ 482 0032 0721     		movs	r1, #7
+ 483 0034 0620     		movs	r0, #6
+ 484 0036 FFF7FEFF 		bl	set_pixel_brightness_blinkt
+ 485              	.LVL43:
+ 150:Src/blinkt.c  ****   set_pixel_brightness_blinkt(7,6);
+ 486              		.loc 1 150 0
+ARM GAS  /tmp/cctuXJ4s.s 			page 12
+
+
+ 487 003a 0621     		movs	r1, #6
+ 488 003c 0720     		movs	r0, #7
+ 489 003e FFF7FEFF 		bl	set_pixel_brightness_blinkt
+ 490              	.LVL44:
+ 151:Src/blinkt.c  **** }
+ 491              		.loc 1 151 0
+ 492              		@ sp needed
+ 493 0042 10BD     		pop	{r4, pc}
+ 494              		.cfi_endproc
+ 495              	.LFE48:
+ 497              		.section	.text.candle_color_shift,"ax",%progbits
+ 498              		.align	1
+ 499              		.global	candle_color_shift
+ 500              		.syntax unified
+ 501              		.code	16
+ 502              		.thumb_func
+ 503              		.fpu softvfp
+ 505              	candle_color_shift:
+ 506              	.LFB49:
+ 152:Src/blinkt.c  **** 
+ 153:Src/blinkt.c  **** void candle_color_shift() {
+ 507              		.loc 1 153 0
+ 508              		.cfi_startproc
+ 509              		@ args = 0, pretend = 0, frame = 0
+ 510              		@ frame_needed = 0, uses_anonymous_args = 0
+ 511 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 512              	.LCFI8:
+ 513              		.cfi_def_cfa_offset 24
+ 514              		.cfi_offset 3, -24
+ 515              		.cfi_offset 4, -20
+ 516              		.cfi_offset 5, -16
+ 517              		.cfi_offset 6, -12
+ 518              		.cfi_offset 7, -8
+ 519              		.cfi_offset 14, -4
+ 520              	.LVL45:
+ 521              	.LBB2:
+ 154:Src/blinkt.c  ****   uint8_t r,g,b,c_rng[3];
+ 155:Src/blinkt.c  ****   uint32_t rng;
+ 156:Src/blinkt.c  ****   for(int i=0; i<NUM_LEDS-1; i++){
+ 522              		.loc 1 156 0
+ 523 0002 0020     		movs	r0, #0
+ 524 0004 0FE0     		b	.L30
+ 525              	.LVL46:
+ 526              	.L31:
+ 157:Src/blinkt.c  ****     r = ((uint8_t)((leds[i+1] >> 24) & 0b11111111));
+ 527              		.loc 1 157 0 discriminator 3
+ 528 0006 471C     		adds	r7, r0, #1
+ 529 0008 BA00     		lsls	r2, r7, #2
+ 530 000a 1C4B     		ldr	r3, .L39
+ 531 000c D358     		ldr	r3, [r2, r3]
+ 532 000e 1E0E     		lsrs	r6, r3, #24
+ 533              	.LVL47:
+ 158:Src/blinkt.c  ****     g = ((uint8_t)((leds[i+1] >> 16) & 0b11111111));
+ 534              		.loc 1 158 0 discriminator 3
+ 535 0010 1D0C     		lsrs	r5, r3, #16
+ 536              	.LVL48:
+ 537 0012 EDB2     		uxtb	r5, r5
+ARM GAS  /tmp/cctuXJ4s.s 			page 13
+
+
+ 538              	.LVL49:
+ 159:Src/blinkt.c  ****     b = ((uint8_t)((leds[i+1] >> 8) & 0b11111111));
+ 539              		.loc 1 159 0 discriminator 3
+ 540 0014 1B0A     		lsrs	r3, r3, #8
+ 541 0016 DCB2     		uxtb	r4, r3
+ 542              	.LVL50:
+ 160:Src/blinkt.c  ****     set_pixel_blinkt(i,r,g,b);
+ 543              		.loc 1 160 0 discriminator 3
+ 544 0018 C0B2     		uxtb	r0, r0
+ 545              	.LVL51:
+ 546 001a 2300     		movs	r3, r4
+ 547 001c 2A00     		movs	r2, r5
+ 548 001e 3100     		movs	r1, r6
+ 549 0020 FFF7FEFF 		bl	set_pixel_blinkt
+ 550              	.LVL52:
+ 156:Src/blinkt.c  ****     r = ((uint8_t)((leds[i+1] >> 24) & 0b11111111));
+ 551              		.loc 1 156 0 discriminator 3
+ 552 0024 3800     		movs	r0, r7
+ 553              	.LVL53:
+ 554              	.L30:
+ 156:Src/blinkt.c  ****     r = ((uint8_t)((leds[i+1] >> 24) & 0b11111111));
+ 555              		.loc 1 156 0 is_stmt 0 discriminator 1
+ 556 0026 0628     		cmp	r0, #6
+ 557 0028 EDDD     		ble	.L31
+ 558              	.LBE2:
+ 161:Src/blinkt.c  ****   }
+ 162:Src/blinkt.c  ****   rng = HAL_GetTick();
+ 559              		.loc 1 162 0 is_stmt 1
+ 560 002a FFF7FEFF 		bl	HAL_GetTick
+ 561              	.LVL54:
+ 163:Src/blinkt.c  ****   rng = (uint8_t)(rng & 0b11111111);
+ 164:Src/blinkt.c  ****   r += (rng >> 4)-7;
+ 562              		.loc 1 164 0
+ 563 002e 0309     		lsrs	r3, r0, #4
+ 564 0030 0F21     		movs	r1, #15
+ 565 0032 1940     		ands	r1, r3
+ 566 0034 7118     		adds	r1, r6, r1
+ 567 0036 C9B2     		uxtb	r1, r1
+ 568 0038 0739     		subs	r1, r1, #7
+ 569 003a C9B2     		uxtb	r1, r1
+ 570              	.LVL55:
+ 165:Src/blinkt.c  ****   g += (rng >> 5)-5;
+ 571              		.loc 1 165 0
+ 572 003c 4309     		lsrs	r3, r0, #5
+ 573 003e 0722     		movs	r2, #7
+ 574 0040 1A40     		ands	r2, r3
+ 575 0042 AA18     		adds	r2, r5, r2
+ 576 0044 D2B2     		uxtb	r2, r2
+ 577 0046 053A     		subs	r2, r2, #5
+ 578 0048 D2B2     		uxtb	r2, r2
+ 579              	.LVL56:
+ 166:Src/blinkt.c  ****   b += (rng >> 6)-2;
+ 580              		.loc 1 166 0
+ 581 004a 8009     		lsrs	r0, r0, #6
+ 582              	.LVL57:
+ 583 004c 0323     		movs	r3, #3
+ 584 004e 1840     		ands	r0, r3
+ARM GAS  /tmp/cctuXJ4s.s 			page 14
+
+
+ 585 0050 2418     		adds	r4, r4, r0
+ 586              	.LVL58:
+ 587 0052 E3B2     		uxtb	r3, r4
+ 588 0054 023B     		subs	r3, r3, #2
+ 589 0056 DBB2     		uxtb	r3, r3
+ 590              	.LVL59:
+ 167:Src/blinkt.c  **** 
+ 168:Src/blinkt.c  ****   // for(int i=0; i<3; i++) {
+ 169:Src/blinkt.c  ****   //   if(c_rng[i] <= 0) {
+ 170:Src/blinkt.c  ****   //     c_rng[i]-=1
+ 171:Src/blinkt.c  ****   //   }
+ 172:Src/blinkt.c  ****   // }
+ 173:Src/blinkt.c  **** 
+ 174:Src/blinkt.c  ****   // r = rng & 0b11111111;
+ 175:Src/blinkt.c  ****   // if(r < 126) {
+ 176:Src/blinkt.c  ****   //   r+=126;
+ 177:Src/blinkt.c  ****   // }
+ 178:Src/blinkt.c  **** 
+ 179:Src/blinkt.c  ****   // g = rng & 0b01111111;
+ 180:Src/blinkt.c  **** 
+ 181:Src/blinkt.c  ****   // b = rng & 0b00001111;
+ 182:Src/blinkt.c  **** 
+ 183:Src/blinkt.c  ****   if(r > RED_MAX){
+ 184:Src/blinkt.c  ****     r=RED_MAX;
+ 185:Src/blinkt.c  ****   }
+ 186:Src/blinkt.c  ****   else if (r < RED_MIN)
+ 591              		.loc 1 186 0
+ 592 0058 DB29     		cmp	r1, #219
+ 593 005a 00D8     		bhi	.L32
+ 187:Src/blinkt.c  ****   {
+ 188:Src/blinkt.c  ****     r=RED_MIN;
+ 594              		.loc 1 188 0
+ 595 005c DC21     		movs	r1, #220
+ 596              	.LVL60:
+ 597              	.L32:
+ 189:Src/blinkt.c  ****   }
+ 190:Src/blinkt.c  ****   if(g > GREEN_MAX){
+ 598              		.loc 1 190 0
+ 599 005e C82A     		cmp	r2, #200
+ 600 0060 03D8     		bhi	.L36
+ 191:Src/blinkt.c  ****     g=GREEN_MAX;
+ 192:Src/blinkt.c  ****   }
+ 193:Src/blinkt.c  ****   else if (g < GREEN_MIN)
+ 601              		.loc 1 193 0
+ 602 0062 1D2A     		cmp	r2, #29
+ 603 0064 02D8     		bhi	.L33
+ 194:Src/blinkt.c  ****   {
+ 195:Src/blinkt.c  ****     g=GREEN_MIN;
+ 604              		.loc 1 195 0
+ 605 0066 1E22     		movs	r2, #30
+ 606              	.LVL61:
+ 607 0068 00E0     		b	.L33
+ 608              	.LVL62:
+ 609              	.L36:
+ 191:Src/blinkt.c  ****     g=GREEN_MAX;
+ 610              		.loc 1 191 0
+ 611 006a C822     		movs	r2, #200
+ARM GAS  /tmp/cctuXJ4s.s 			page 15
+
+
+ 612              	.LVL63:
+ 613              	.L33:
+ 196:Src/blinkt.c  ****   }
+ 197:Src/blinkt.c  ****   if(b > BLUE_MAX){
+ 614              		.loc 1 197 0
+ 615 006c 0C2B     		cmp	r3, #12
+ 616 006e 00D9     		bls	.L34
+ 198:Src/blinkt.c  ****     b=BLUE_MAX;
+ 617              		.loc 1 198 0
+ 618 0070 0C23     		movs	r3, #12
+ 619              	.LVL64:
+ 620              	.L34:
+ 199:Src/blinkt.c  ****   }
+ 200:Src/blinkt.c  ****   else if (b < BLUE_MIN){
+ 201:Src/blinkt.c  ****     b=BLUE_MIN;
+ 202:Src/blinkt.c  ****   }
+ 203:Src/blinkt.c  **** 
+ 204:Src/blinkt.c  ****   set_pixel_blinkt(NUM_LEDS-1,r,g,b);
+ 621              		.loc 1 204 0
+ 622 0072 0720     		movs	r0, #7
+ 623 0074 FFF7FEFF 		bl	set_pixel_blinkt
+ 624              	.LVL65:
+ 205:Src/blinkt.c  **** }
+ 625              		.loc 1 205 0
+ 626              		@ sp needed
+ 627 0078 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 628              	.L40:
+ 629 007a C046     		.align	2
+ 630              	.L39:
+ 631 007c 00000000 		.word	.LANCHOR0
+ 632              		.cfi_endproc
+ 633              	.LFE49:
+ 635              		.global	leds
+ 636              		.comm	x,4,4
+ 637              		.comm	spi_data,1,1
+ 638              		.section	.bss.leds,"aw",%nobits
+ 639              		.align	2
+ 640              		.set	.LANCHOR0,. + 0
+ 643              	leds:
+ 644 0000 00000000 		.space	32
+ 644      00000000 
+ 644      00000000 
+ 644      00000000 
+ 644      00000000 
+ 645              		.text
+ 646              	.Letext0:
+ 647              		.file 2 "/usr/include/newlib/machine/_default_types.h"
+ 648              		.file 3 "/usr/include/newlib/sys/_stdint.h"
+ 649              		.file 4 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h"
+ 650              		.file 5 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f091xc.h"
+ 651              		.file 6 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h"
+ 652              		.file 7 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_dma.h"
+ 653              		.file 8 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_spi.h"
+ 654              		.file 9 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h"
+ARM GAS  /tmp/cctuXJ4s.s 			page 16
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 blinkt.c
+     /tmp/cctuXJ4s.s:16     .text.clear_blinkt:0000000000000000 $t
+     /tmp/cctuXJ4s.s:23     .text.clear_blinkt:0000000000000000 clear_blinkt
+     /tmp/cctuXJ4s.s:58     .text.clear_blinkt:0000000000000020 $d
+                            *COM*:0000000000000004 x
+     /tmp/cctuXJ4s.s:64     .text.set_pixel_brightness_blinkt:0000000000000000 $t
+     /tmp/cctuXJ4s.s:71     .text.set_pixel_brightness_blinkt:0000000000000000 set_pixel_brightness_blinkt
+     /tmp/cctuXJ4s.s:107    .text.set_pixel_brightness_blinkt:0000000000000020 $d
+     /tmp/cctuXJ4s.s:112    .text.set_pixel_uint32_blinkt:0000000000000000 $t
+     /tmp/cctuXJ4s.s:119    .text.set_pixel_uint32_blinkt:0000000000000000 set_pixel_uint32_blinkt
+     /tmp/cctuXJ4s.s:142    .text.set_pixel_uint32_blinkt:000000000000000c $d
+     /tmp/cctuXJ4s.s:147    .text.rgbb_blinkt:0000000000000000 $t
+     /tmp/cctuXJ4s.s:154    .text.rgbb_blinkt:0000000000000000 rgbb_blinkt
+     /tmp/cctuXJ4s.s:193    .text.set_pixel_blinkt:0000000000000000 $t
+     /tmp/cctuXJ4s.s:200    .text.set_pixel_blinkt:0000000000000000 set_pixel_blinkt
+     /tmp/cctuXJ4s.s:241    .text.set_pixel_blinkt:0000000000000020 $d
+     /tmp/cctuXJ4s.s:246    .text.rgb_blinkt:0000000000000000 $t
+     /tmp/cctuXJ4s.s:253    .text.rgb_blinkt:0000000000000000 rgb_blinkt
+     /tmp/cctuXJ4s.s:276    .text.write_byte_blinkt:0000000000000000 $t
+     /tmp/cctuXJ4s.s:283    .text.write_byte_blinkt:0000000000000000 write_byte_blinkt
+     /tmp/cctuXJ4s.s:314    .text.write_byte_blinkt:0000000000000018 $d
+     /tmp/cctuXJ4s.s:319    .text.show_blinkt:0000000000000000 $t
+     /tmp/cctuXJ4s.s:326    .text.show_blinkt:0000000000000000 show_blinkt
+     /tmp/cctuXJ4s.s:427    .text.show_blinkt:0000000000000088 $d
+     /tmp/cctuXJ4s.s:433    .text.candle_brightness_blinkt:0000000000000000 $t
+     /tmp/cctuXJ4s.s:440    .text.candle_brightness_blinkt:0000000000000000 candle_brightness_blinkt
+     /tmp/cctuXJ4s.s:498    .text.candle_color_shift:0000000000000000 $t
+     /tmp/cctuXJ4s.s:505    .text.candle_color_shift:0000000000000000 candle_color_shift
+     /tmp/cctuXJ4s.s:631    .text.candle_color_shift:000000000000007c $d
+     /tmp/cctuXJ4s.s:643    .bss.leds:0000000000000000 leds
+                            *COM*:0000000000000001 spi_data
+     /tmp/cctuXJ4s.s:639    .bss.leds:0000000000000000 $d
+                     .debug_frame:0000000000000010 $d
+
+UNDEFINED SYMBOLS
+rgbb
+HAL_SPI_Transmit
+hspi1
+HAL_GetTick

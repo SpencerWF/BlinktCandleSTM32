@@ -1,0 +1,483 @@
+ARM GAS  /tmp/ccW2KHaT.s 			page 1
+
+
+   1              		.cpu cortex-m0
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 0
+  10              		.eabi_attribute 18, 4
+  11              		.file	"main.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.SystemClock_Config,"ax",%progbits
+  16              		.align	1
+  17              		.global	SystemClock_Config
+  18              		.syntax unified
+  19              		.code	16
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	SystemClock_Config:
+  24              	.LFB41:
+  25              		.file 1 "Src/main.c"
+   1:Src/main.c    **** /* USER CODE BEGIN Header */
+   2:Src/main.c    **** /**
+   3:Src/main.c    ****   ******************************************************************************
+   4:Src/main.c    ****   * @file           : main.c
+   5:Src/main.c    ****   * @brief          : Main program body
+   6:Src/main.c    ****   ******************************************************************************
+   7:Src/main.c    ****   * @attention
+   8:Src/main.c    ****   *
+   9:Src/main.c    ****   * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
+  10:Src/main.c    ****   * All rights reserved.</center></h2>
+  11:Src/main.c    ****   *
+  12:Src/main.c    ****   * This software component is licensed by ST under BSD 3-Clause license,
+  13:Src/main.c    ****   * the "License"; You may not use this file except in compliance with the
+  14:Src/main.c    ****   * License. You may obtain a copy of the License at:
+  15:Src/main.c    ****   *                        opensource.org/licenses/BSD-3-Clause
+  16:Src/main.c    ****   *
+  17:Src/main.c    ****   ******************************************************************************
+  18:Src/main.c    ****   */
+  19:Src/main.c    **** /* USER CODE END Header */
+  20:Src/main.c    **** 
+  21:Src/main.c    **** /* Includes ------------------------------------------------------------------*/
+  22:Src/main.c    **** #include "main.h"
+  23:Src/main.c    **** #include "spi.h"
+  24:Src/main.c    **** #include "gpio.h"
+  25:Src/main.c    **** 
+  26:Src/main.c    **** /* Private includes ----------------------------------------------------------*/
+  27:Src/main.c    **** /* USER CODE BEGIN Includes */
+  28:Src/main.c    **** #include <blinkt.h>
+  29:Src/main.c    **** /* USER CODE END Includes */
+  30:Src/main.c    **** 
+  31:Src/main.c    **** /* Private typedef -----------------------------------------------------------*/
+  32:Src/main.c    **** /* USER CODE BEGIN PTD */
+  33:Src/main.c    **** 
+ARM GAS  /tmp/ccW2KHaT.s 			page 2
+
+
+  34:Src/main.c    **** /* USER CODE END PTD */
+  35:Src/main.c    **** 
+  36:Src/main.c    **** /* Private define ------------------------------------------------------------*/
+  37:Src/main.c    **** /* USER CODE BEGIN PD */
+  38:Src/main.c    **** /* USER CODE END PD */
+  39:Src/main.c    **** 
+  40:Src/main.c    **** /* Private macro -------------------------------------------------------------*/
+  41:Src/main.c    **** /* USER CODE BEGIN PM */
+  42:Src/main.c    **** 
+  43:Src/main.c    **** /* USER CODE END PM */
+  44:Src/main.c    **** 
+  45:Src/main.c    **** /* Private variables ---------------------------------------------------------*/
+  46:Src/main.c    **** 
+  47:Src/main.c    **** /* USER CODE BEGIN PV */
+  48:Src/main.c    **** uint8_t cur_brightness=0;
+  49:Src/main.c    **** /* USER CODE END PV */
+  50:Src/main.c    **** 
+  51:Src/main.c    **** /* Private function prototypes -----------------------------------------------*/
+  52:Src/main.c    **** void SystemClock_Config(void);
+  53:Src/main.c    **** /* USER CODE BEGIN PFP */
+  54:Src/main.c    **** void candle_brightness_blinkt();
+  55:Src/main.c    **** 
+  56:Src/main.c    **** /* USER CODE END PFP */
+  57:Src/main.c    **** 
+  58:Src/main.c    **** /* Private user code ---------------------------------------------------------*/
+  59:Src/main.c    **** /* USER CODE BEGIN 0 */
+  60:Src/main.c    **** 
+  61:Src/main.c    **** /* USER CODE END 0 */
+  62:Src/main.c    **** 
+  63:Src/main.c    **** /**
+  64:Src/main.c    ****   * @brief  The application entry point.
+  65:Src/main.c    ****   * @retval int
+  66:Src/main.c    ****   */
+  67:Src/main.c    **** int main(void)
+  68:Src/main.c    **** {
+  69:Src/main.c    ****   /* USER CODE BEGIN 1 */
+  70:Src/main.c    **** 
+  71:Src/main.c    ****   /* USER CODE END 1 */
+  72:Src/main.c    ****   
+  73:Src/main.c    **** 
+  74:Src/main.c    ****   /* MCU Configuration--------------------------------------------------------*/
+  75:Src/main.c    **** 
+  76:Src/main.c    ****   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  77:Src/main.c    ****   HAL_Init();
+  78:Src/main.c    **** 
+  79:Src/main.c    ****   /* USER CODE BEGIN Init */
+  80:Src/main.c    **** 
+  81:Src/main.c    ****   /* USER CODE END Init */
+  82:Src/main.c    **** 
+  83:Src/main.c    ****   /* Configure the system clock */
+  84:Src/main.c    ****   SystemClock_Config();
+  85:Src/main.c    **** 
+  86:Src/main.c    ****   /* USER CODE BEGIN SysInit */
+  87:Src/main.c    **** 
+  88:Src/main.c    ****   /* USER CODE END SysInit */
+  89:Src/main.c    **** 
+  90:Src/main.c    ****   /* Initialize all configured peripherals */
+ARM GAS  /tmp/ccW2KHaT.s 			page 3
+
+
+  91:Src/main.c    ****   MX_GPIO_Init();
+  92:Src/main.c    ****   MX_SPI1_Init();
+  93:Src/main.c    ****   /* USER CODE BEGIN 2 */
+  94:Src/main.c    ****   candle_brightness_blinkt();
+  95:Src/main.c    ****   set_pixel_blinkt(0,10,19,240);
+  96:Src/main.c    ****   set_pixel_blinkt(1,100,19,24);
+  97:Src/main.c    ****   set_pixel_blinkt(2,130,19,240);
+  98:Src/main.c    ****   set_pixel_blinkt(3,10,19,40);
+  99:Src/main.c    ****   set_pixel_blinkt(4,20,38,80);
+ 100:Src/main.c    ****   set_pixel_blinkt(5,40,76,160);
+ 101:Src/main.c    ****   set_pixel_blinkt(6,96,35,75);
+ 102:Src/main.c    ****   set_pixel_blinkt(7,200,19,1);
+ 103:Src/main.c    ****   
+ 104:Src/main.c    **** 
+ 105:Src/main.c    ****   /* USER CODE END 2 */
+ 106:Src/main.c    ****  
+ 107:Src/main.c    ****  
+ 108:Src/main.c    **** 
+ 109:Src/main.c    ****   /* Infinite loop */
+ 110:Src/main.c    ****   /* USER CODE BEGIN WHILE */
+ 111:Src/main.c    ****   // clear_blinkt();
+ 112:Src/main.c    ****   while (1)
+ 113:Src/main.c    ****   {
+ 114:Src/main.c    ****     /* USER CODE END WHILE */
+ 115:Src/main.c    **** 
+ 116:Src/main.c    ****     /* USER CODE BEGIN 3 */
+ 117:Src/main.c    **** 
+ 118:Src/main.c    ****     candle_color_shift();    
+ 119:Src/main.c    ****     show_blinkt();
+ 120:Src/main.c    ****     // cur_brightness++;
+ 121:Src/main.c    ****     // if(cur_brightness > 31){
+ 122:Src/main.c    ****     //   cur_brightness=0;
+ 123:Src/main.c    ****     // }
+ 124:Src/main.c    ****     HAL_Delay(20);
+ 125:Src/main.c    ****   }
+ 126:Src/main.c    ****   /* USER CODE END 3 */
+ 127:Src/main.c    **** }
+ 128:Src/main.c    **** 
+ 129:Src/main.c    **** /**
+ 130:Src/main.c    ****   * @brief System Clock Configuration
+ 131:Src/main.c    ****   * @retval None
+ 132:Src/main.c    ****   */
+ 133:Src/main.c    **** void SystemClock_Config(void)
+ 134:Src/main.c    **** {
+  26              		.loc 1 134 0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 72
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30 0000 10B5     		push	{r4, lr}
+  31              	.LCFI0:
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 4, -8
+  34              		.cfi_offset 14, -4
+  35 0002 92B0     		sub	sp, sp, #72
+  36              	.LCFI1:
+  37              		.cfi_def_cfa_offset 80
+ 135:Src/main.c    ****   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+ARM GAS  /tmp/ccW2KHaT.s 			page 4
+
+
+  38              		.loc 1 135 0
+  39 0004 3422     		movs	r2, #52
+  40 0006 0021     		movs	r1, #0
+  41 0008 05A8     		add	r0, sp, #20
+  42 000a FFF7FEFF 		bl	memset
+  43              	.LVL0:
+ 136:Src/main.c    ****   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  44              		.loc 1 136 0
+  45 000e 1022     		movs	r2, #16
+  46 0010 0021     		movs	r1, #0
+  47 0012 01A8     		add	r0, sp, #4
+  48 0014 FFF7FEFF 		bl	memset
+  49              	.LVL1:
+ 137:Src/main.c    **** 
+ 138:Src/main.c    ****   /** Initializes the CPU, AHB and APB busses clocks 
+ 139:Src/main.c    ****   */
+ 140:Src/main.c    ****   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  50              		.loc 1 140 0
+  51 0018 0224     		movs	r4, #2
+  52 001a 0594     		str	r4, [sp, #20]
+ 141:Src/main.c    ****   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  53              		.loc 1 141 0
+  54 001c 0123     		movs	r3, #1
+  55 001e 0893     		str	r3, [sp, #32]
+ 142:Src/main.c    ****   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  56              		.loc 1 142 0
+  57 0020 1022     		movs	r2, #16
+  58 0022 0992     		str	r2, [sp, #36]
+ 143:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  59              		.loc 1 143 0
+  60 0024 0E94     		str	r4, [sp, #56]
+ 144:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  61              		.loc 1 144 0
+  62 0026 8022     		movs	r2, #128
+  63 0028 1202     		lsls	r2, r2, #8
+  64 002a 0F92     		str	r2, [sp, #60]
+ 145:Src/main.c    ****   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL12;
+  65              		.loc 1 145 0
+  66 002c A022     		movs	r2, #160
+  67 002e 9203     		lsls	r2, r2, #14
+  68 0030 1092     		str	r2, [sp, #64]
+ 146:Src/main.c    ****   RCC_OscInitStruct.PLL.PREDIV = RCC_PREDIV_DIV2;
+  69              		.loc 1 146 0
+  70 0032 1193     		str	r3, [sp, #68]
+ 147:Src/main.c    ****   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  71              		.loc 1 147 0
+  72 0034 05A8     		add	r0, sp, #20
+  73 0036 FFF7FEFF 		bl	HAL_RCC_OscConfig
+  74              	.LVL2:
+ 148:Src/main.c    ****   {
+ 149:Src/main.c    ****     Error_Handler();
+ 150:Src/main.c    ****   }
+ 151:Src/main.c    ****   /** Initializes the CPU, AHB and APB busses clocks 
+ 152:Src/main.c    ****   */
+ 153:Src/main.c    ****   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+  75              		.loc 1 153 0
+  76 003a 0723     		movs	r3, #7
+ARM GAS  /tmp/ccW2KHaT.s 			page 5
+
+
+  77 003c 0193     		str	r3, [sp, #4]
+ 154:Src/main.c    ****                               |RCC_CLOCKTYPE_PCLK1;
+ 155:Src/main.c    ****   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  78              		.loc 1 155 0
+  79 003e 0294     		str	r4, [sp, #8]
+ 156:Src/main.c    ****   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  80              		.loc 1 156 0
+  81 0040 0023     		movs	r3, #0
+  82 0042 0393     		str	r3, [sp, #12]
+ 157:Src/main.c    ****   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  83              		.loc 1 157 0
+  84 0044 0493     		str	r3, [sp, #16]
+ 158:Src/main.c    **** 
+ 159:Src/main.c    ****   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+  85              		.loc 1 159 0
+  86 0046 0121     		movs	r1, #1
+  87 0048 01A8     		add	r0, sp, #4
+  88 004a FFF7FEFF 		bl	HAL_RCC_ClockConfig
+  89              	.LVL3:
+ 160:Src/main.c    ****   {
+ 161:Src/main.c    ****     Error_Handler();
+ 162:Src/main.c    ****   }
+ 163:Src/main.c    **** }
+  90              		.loc 1 163 0
+  91 004e 12B0     		add	sp, sp, #72
+  92              		@ sp needed
+  93 0050 10BD     		pop	{r4, pc}
+  94              		.cfi_endproc
+  95              	.LFE41:
+  97              		.section	.text.main,"ax",%progbits
+  98              		.align	1
+  99              		.global	main
+ 100              		.syntax unified
+ 101              		.code	16
+ 102              		.thumb_func
+ 103              		.fpu softvfp
+ 105              	main:
+ 106              	.LFB40:
+  68:Src/main.c    ****   /* USER CODE BEGIN 1 */
+ 107              		.loc 1 68 0
+ 108              		.cfi_startproc
+ 109              		@ Volatile: function does not return.
+ 110              		@ args = 0, pretend = 0, frame = 0
+ 111              		@ frame_needed = 0, uses_anonymous_args = 0
+ 112 0000 10B5     		push	{r4, lr}
+ 113              	.LCFI2:
+ 114              		.cfi_def_cfa_offset 8
+ 115              		.cfi_offset 4, -8
+ 116              		.cfi_offset 14, -4
+  77:Src/main.c    **** 
+ 117              		.loc 1 77 0
+ 118 0002 FFF7FEFF 		bl	HAL_Init
+ 119              	.LVL4:
+  84:Src/main.c    **** 
+ 120              		.loc 1 84 0
+ 121 0006 FFF7FEFF 		bl	SystemClock_Config
+ 122              	.LVL5:
+ARM GAS  /tmp/ccW2KHaT.s 			page 6
+
+
+  91:Src/main.c    ****   MX_SPI1_Init();
+ 123              		.loc 1 91 0
+ 124 000a FFF7FEFF 		bl	MX_GPIO_Init
+ 125              	.LVL6:
+  92:Src/main.c    ****   /* USER CODE BEGIN 2 */
+ 126              		.loc 1 92 0
+ 127 000e FFF7FEFF 		bl	MX_SPI1_Init
+ 128              	.LVL7:
+  94:Src/main.c    ****   set_pixel_blinkt(0,10,19,240);
+ 129              		.loc 1 94 0
+ 130 0012 FFF7FEFF 		bl	candle_brightness_blinkt
+ 131              	.LVL8:
+  95:Src/main.c    ****   set_pixel_blinkt(1,100,19,24);
+ 132              		.loc 1 95 0
+ 133 0016 F023     		movs	r3, #240
+ 134 0018 1322     		movs	r2, #19
+ 135 001a 0A21     		movs	r1, #10
+ 136 001c 0020     		movs	r0, #0
+ 137 001e FFF7FEFF 		bl	set_pixel_blinkt
+ 138              	.LVL9:
+  96:Src/main.c    ****   set_pixel_blinkt(2,130,19,240);
+ 139              		.loc 1 96 0
+ 140 0022 1823     		movs	r3, #24
+ 141 0024 1322     		movs	r2, #19
+ 142 0026 6421     		movs	r1, #100
+ 143 0028 0120     		movs	r0, #1
+ 144 002a FFF7FEFF 		bl	set_pixel_blinkt
+ 145              	.LVL10:
+  97:Src/main.c    ****   set_pixel_blinkt(3,10,19,40);
+ 146              		.loc 1 97 0
+ 147 002e F023     		movs	r3, #240
+ 148 0030 1322     		movs	r2, #19
+ 149 0032 8221     		movs	r1, #130
+ 150 0034 0220     		movs	r0, #2
+ 151 0036 FFF7FEFF 		bl	set_pixel_blinkt
+ 152              	.LVL11:
+  98:Src/main.c    ****   set_pixel_blinkt(4,20,38,80);
+ 153              		.loc 1 98 0
+ 154 003a 2823     		movs	r3, #40
+ 155 003c 1322     		movs	r2, #19
+ 156 003e 0A21     		movs	r1, #10
+ 157 0040 0320     		movs	r0, #3
+ 158 0042 FFF7FEFF 		bl	set_pixel_blinkt
+ 159              	.LVL12:
+  99:Src/main.c    ****   set_pixel_blinkt(5,40,76,160);
+ 160              		.loc 1 99 0
+ 161 0046 5023     		movs	r3, #80
+ 162 0048 2622     		movs	r2, #38
+ 163 004a 1421     		movs	r1, #20
+ 164 004c 0420     		movs	r0, #4
+ 165 004e FFF7FEFF 		bl	set_pixel_blinkt
+ 166              	.LVL13:
+ 100:Src/main.c    ****   set_pixel_blinkt(6,96,35,75);
+ 167              		.loc 1 100 0
+ 168 0052 A023     		movs	r3, #160
+ 169 0054 4C22     		movs	r2, #76
+ 170 0056 2821     		movs	r1, #40
+ARM GAS  /tmp/ccW2KHaT.s 			page 7
+
+
+ 171 0058 0520     		movs	r0, #5
+ 172 005a FFF7FEFF 		bl	set_pixel_blinkt
+ 173              	.LVL14:
+ 101:Src/main.c    ****   set_pixel_blinkt(7,200,19,1);
+ 174              		.loc 1 101 0
+ 175 005e 4B23     		movs	r3, #75
+ 176 0060 2322     		movs	r2, #35
+ 177 0062 6021     		movs	r1, #96
+ 178 0064 0620     		movs	r0, #6
+ 179 0066 FFF7FEFF 		bl	set_pixel_blinkt
+ 180              	.LVL15:
+ 102:Src/main.c    ****   
+ 181              		.loc 1 102 0
+ 182 006a 0123     		movs	r3, #1
+ 183 006c 1322     		movs	r2, #19
+ 184 006e C821     		movs	r1, #200
+ 185 0070 0720     		movs	r0, #7
+ 186 0072 FFF7FEFF 		bl	set_pixel_blinkt
+ 187              	.LVL16:
+ 188              	.L3:
+ 118:Src/main.c    ****     show_blinkt();
+ 189              		.loc 1 118 0 discriminator 1
+ 190 0076 FFF7FEFF 		bl	candle_color_shift
+ 191              	.LVL17:
+ 119:Src/main.c    ****     // cur_brightness++;
+ 192              		.loc 1 119 0 discriminator 1
+ 193 007a FFF7FEFF 		bl	show_blinkt
+ 194              	.LVL18:
+ 124:Src/main.c    ****   }
+ 195              		.loc 1 124 0 discriminator 1
+ 196 007e 1420     		movs	r0, #20
+ 197 0080 FFF7FEFF 		bl	HAL_Delay
+ 198              	.LVL19:
+ 199 0084 F7E7     		b	.L3
+ 200              		.cfi_endproc
+ 201              	.LFE40:
+ 203              		.section	.text.Error_Handler,"ax",%progbits
+ 204              		.align	1
+ 205              		.global	Error_Handler
+ 206              		.syntax unified
+ 207              		.code	16
+ 208              		.thumb_func
+ 209              		.fpu softvfp
+ 211              	Error_Handler:
+ 212              	.LFB42:
+ 164:Src/main.c    **** 
+ 165:Src/main.c    **** /* USER CODE BEGIN 4 */
+ 166:Src/main.c    **** 
+ 167:Src/main.c    **** 
+ 168:Src/main.c    **** /* USER CODE END 4 */
+ 169:Src/main.c    **** 
+ 170:Src/main.c    **** /**
+ 171:Src/main.c    ****   * @brief  This function is executed in case of error occurrence.
+ 172:Src/main.c    ****   * @retval None
+ 173:Src/main.c    ****   */
+ 174:Src/main.c    **** void Error_Handler(void)
+ 175:Src/main.c    **** {
+ARM GAS  /tmp/ccW2KHaT.s 			page 8
+
+
+ 213              		.loc 1 175 0
+ 214              		.cfi_startproc
+ 215              		@ args = 0, pretend = 0, frame = 0
+ 216              		@ frame_needed = 0, uses_anonymous_args = 0
+ 217              		@ link register save eliminated.
+ 176:Src/main.c    ****   /* USER CODE BEGIN Error_Handler_Debug */
+ 177:Src/main.c    ****   /* User can add his own implementation to report the HAL error return state */
+ 178:Src/main.c    **** 
+ 179:Src/main.c    ****   /* USER CODE END Error_Handler_Debug */
+ 180:Src/main.c    **** }
+ 218              		.loc 1 180 0
+ 219              		@ sp needed
+ 220 0000 7047     		bx	lr
+ 221              		.cfi_endproc
+ 222              	.LFE42:
+ 224              		.global	cur_brightness
+ 225              		.section	.bss.cur_brightness,"aw",%nobits
+ 228              	cur_brightness:
+ 229 0000 00       		.space	1
+ 230              		.text
+ 231              	.Letext0:
+ 232              		.file 2 "/usr/include/newlib/machine/_default_types.h"
+ 233              		.file 3 "/usr/include/newlib/sys/_stdint.h"
+ 234              		.file 4 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h"
+ 235              		.file 5 "Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f091xc.h"
+ 236              		.file 6 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h"
+ 237              		.file 7 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_rcc.h"
+ 238              		.file 8 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_dma.h"
+ 239              		.file 9 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_spi.h"
+ 240              		.file 10 "Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h"
+ 241              		.file 11 "Inc/spi.h"
+ 242              		.file 12 "Inc/gpio.h"
+ 243              		.file 13 "Inc/blinkt.h"
+ARM GAS  /tmp/ccW2KHaT.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+     /tmp/ccW2KHaT.s:16     .text.SystemClock_Config:0000000000000000 $t
+     /tmp/ccW2KHaT.s:23     .text.SystemClock_Config:0000000000000000 SystemClock_Config
+     /tmp/ccW2KHaT.s:98     .text.main:0000000000000000 $t
+     /tmp/ccW2KHaT.s:105    .text.main:0000000000000000 main
+     /tmp/ccW2KHaT.s:204    .text.Error_Handler:0000000000000000 $t
+     /tmp/ccW2KHaT.s:211    .text.Error_Handler:0000000000000000 Error_Handler
+     /tmp/ccW2KHaT.s:228    .bss.cur_brightness:0000000000000000 cur_brightness
+     /tmp/ccW2KHaT.s:229    .bss.cur_brightness:0000000000000000 $d
+                     .debug_frame:0000000000000010 $d
+
+UNDEFINED SYMBOLS
+memset
+HAL_RCC_OscConfig
+HAL_RCC_ClockConfig
+HAL_Init
+MX_GPIO_Init
+MX_SPI1_Init
+candle_brightness_blinkt
+set_pixel_blinkt
+candle_color_shift
+show_blinkt
+HAL_Delay
